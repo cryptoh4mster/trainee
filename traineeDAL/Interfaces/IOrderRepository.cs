@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using traineeDAL.Entities;
 
 namespace traineeDAL.Interfaces
 {
-    class IOrderRepository
+    public interface IOrderRepository : IGenericRepository<Order>
     {
+
     }
 }
