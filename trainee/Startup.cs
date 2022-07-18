@@ -11,6 +11,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using trainee.Mappings;
+using traineeBLL.Interfaces;
+using traineeBLL.Services;
+using traineeDAL.EF;
+using traineeDAL.Interfaces;
+using traineeDAL.Repositories;
 
 namespace trainee
 {
@@ -26,12 +33,18 @@ namespace trainee
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddControllers();
+            var sqlConnectionString = Configuration.GetConnectionString("DataAccessMSSQLProvider");
+            services.AddDbContext<TraineeDbContext>(options => options.UseSqlServer(sqlConnectionString));
+            services.AddAutoMapper(typeof(MappingsProfile));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "trainee", Version = "v1" });
             });
+            services.AddTransient<IOrderRepository, OrderRepository>();
+            services.AddTransient<IOrderService, OrderService>();
+            services.AddTransient<ICustomerRepository, CustomerRepository>();
+            services.AddTransient<ICustomerService, CustomerService>();
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
