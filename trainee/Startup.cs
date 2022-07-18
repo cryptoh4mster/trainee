@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using traineeDAL.EF;
 
 namespace trainee
 {
@@ -26,7 +28,8 @@ namespace trainee
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
+            var sqlConnectionString = Configuration.GetConnectionString("DataAccessMSSQLProvider");
+            services.AddDbContext<TraineeDbContext>(options => options.UseSqlServer(sqlConnectionString));
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
