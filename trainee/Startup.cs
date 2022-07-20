@@ -48,7 +48,7 @@ namespace trainee
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -56,6 +56,8 @@ namespace trainee
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "trainee v1"));
             }
+            
+            loggerFactory.AddFile("Logs/Trainee-{Date}.txt");
 
             app.UseHttpsRedirection();
 

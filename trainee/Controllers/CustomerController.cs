@@ -8,6 +8,7 @@ using AutoMapper;
 using trainee.ViewModels;
 using traineeBLL.DTO;
 using traineeBLL.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace trainee.Controllers
 {
@@ -17,10 +18,12 @@ namespace trainee.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ICustomerService _customerService;
-        public CustomerController(ICustomerService customerService, IMapper mapper)
+        private readonly ILogger<CustomerController> _logger;
+        public CustomerController(ICustomerService customerService, IMapper mapper, ILogger<CustomerController> logger)
         {
             _customerService = customerService;
             _mapper = mapper;
+            _logger = logger;
         }
         [HttpGet]
         [Route("customers")]
