@@ -8,6 +8,7 @@ using AutoMapper;
 using trainee.ViewModels;
 using traineeBLL.DTO;
 using traineeBLL.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace trainee.Controllers
 {
@@ -17,10 +18,12 @@ namespace trainee.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ICustomerService _customerService;
-        public CustomerController(ICustomerService customerService, IMapper mapper)
+        private readonly ILogger<CustomerController> _logger;
+        public CustomerController(ICustomerService customerService, IMapper mapper, ILogger<CustomerController> logger)
         {
             _customerService = customerService;
             _mapper = mapper;
+            _logger = logger;
         }
         [HttpGet]
         [Route("customers")]
@@ -41,8 +44,9 @@ namespace trainee.Controllers
                 IndexCustomerViewModel customerViewModel = _mapper.Map<IndexCustomerViewModel>(customerDto);
                 return Ok(customerViewModel);
             }
-            catch
+            catch (Exception exception)
             {
+                _logger.LogError(exception.Message);
                 return NotFound("Заказчика с таким id не существует");
             }
         }
@@ -63,8 +67,9 @@ namespace trainee.Controllers
                 await _customerService.DeleteCustomerById(id);
                 return Ok();
             }
-            catch
+            catch (Exception exception)
             {
+                _logger.LogError(exception.Message);
                 return NotFound("Заказчика с таким id не существует");
             }
         }
@@ -72,13 +77,14 @@ namespace trainee.Controllers
         [HttpPut]
         public async Task<ActionResult<CreateCustomerViewModel>> UpdateCustomer(CreateCustomerViewModel customerViewModel)
         {
-            CreateCustomerDTO customerDto = _mapper.Map<CreateCustomerDTO>(customerViewModel);
             try
             {
+                CreateCustomerDTO customerDto = _mapper.Map<CreateCustomerDTO>(customerViewModel);
                 return Ok(await _customerService.UpdateCustomer(customerDto));
             }
-            catch
+            catch (Exception exception)
             {
+                _logger.LogError(exception.Message);
                 return NotFound("Сущность не найдена");
             }
         }
