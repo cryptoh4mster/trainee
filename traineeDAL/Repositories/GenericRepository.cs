@@ -32,12 +32,11 @@ namespace traineeDAL.Repositories
         public async Task<TEntity> Add(TEntity obj)
         {
             await _table.AddAsync(obj);
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
             return obj;
         }
         public async Task<TEntity> Update(TEntity obj)
         {
-            //TODO: Проверить обновляются все поля или только измененные??
             _table.Attach(obj);
             _context.Entry(obj).State = EntityState.Modified;
             await _context.SaveChangesAsync();

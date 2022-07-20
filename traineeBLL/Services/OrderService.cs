@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using traineeBLL.DTO;
 using traineeBLL.Interfaces;
+using traineeDAL.EF;
 using traineeDAL.Entities;
 using traineeDAL.Interfaces;
 
@@ -13,44 +14,46 @@ namespace traineeBLL.Services
 {
     public class OrderService : IOrderService
     {
-        private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
-
-        public OrderService(IOrderRepository orderRepository, IMapper mapper)
+        private readonly IUnitOfWork _unitOfWork;
+        public OrderService(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _orderRepository = orderRepository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<IEnumerable<IndexOrderDTO>> GetOrders()
         {
-            IEnumerable<Order> orders = await _orderRepository.GetAll();
+            IEnumerable<Order> orders = await _unitOfWork.Orders.GetAll();
             IEnumerable<IndexOrderDTO> orderDtos = _mapper.Map<IEnumerable<IndexOrderDTO>>(orders);
             return orderDtos;
         }
 
         public async Task<IndexOrderDTO> GetOrderById(int id)
         {
-            Order order = await _orderRepository.GetById(id);
+            Order order = await _unitOfWork.Orders.GetById(id);
             IndexOrderDTO orderDto = _mapper.Map<IndexOrderDTO>(order);
             return orderDto;
         }
 
         public async Task DeleteOrderById(int id)
         {
-            await _orderRepository.Delete(id);
+            await _unitOfWork.Orders.Delete(id);
+            await _unitOfWork.CompleteAsync();
         }
 
         public async Task<CreateOrderDTO> AddOrder(CreateOrderDTO orderDto)
         {
             Order order = _mapper.Map<Order>(orderDto);
-            Order orderForMapping = await _orderRepository.Add(order);
+            Order orderForMapping = await _unitOfWork.Orders.Add(order);
+            await _unitOfWork.CompleteAsync();
             return _mapper.Map<CreateOrderDTO>(orderForMapping);
         }
         public async Task<CreateOrderDTO> UpdateOrder(CreateOrderDTO orderDto)
         {
             Order order = _mapper.Map<Order>(orderDto);
-            Order orderForMapping = await _orderRepository.Update(order);
+            Order orderForMapping = await _unitOfWork.Orders.Update(order);
+            await _unitOfWork.CompleteAsync();
             return _mapper.Map<CreateOrderDTO>(orderForMapping);
         }
     }

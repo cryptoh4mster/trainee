@@ -33,10 +33,10 @@ namespace trainee.Controllers
             IEnumerable<IndexCustomerViewModel> customerViewModels = _mapper.Map<IEnumerable<IndexCustomerViewModel>>(customerDtos);
             return Ok(customerViewModels);
         }
-
+   
         [HttpGet]
-        [Route("customers/{id}")]
-        public async Task<ActionResult<IndexCustomerDTO>> GetCustomerById(int id)
+        [Route("customers/{id}")]     
+        public async Task<ActionResult<IndexCustomerDTO>> GetCustomerById([FromRoute] int id)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace trainee.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CreateCustomerViewModel>> AddCustomer(CreateCustomerViewModel customerViewModel)
+        public async Task<ActionResult<CreateCustomerViewModel>> AddCustomer([FromBody] CreateCustomerViewModel customerViewModel)
         {
             CreateCustomerDTO customerDto = _mapper.Map<CreateCustomerDTO>(customerViewModel);
             return Ok(await _customerService.AddCustomer(customerDto));
@@ -60,7 +60,7 @@ namespace trainee.Controllers
 
         [HttpDelete]
         [Route("customers/{id}")]
-        public async Task<ActionResult> DeleteCustomerById(int id)
+        public async Task<ActionResult> DeleteCustomerById([FromRoute] int id)
         {
             try
             {
@@ -75,7 +75,7 @@ namespace trainee.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<CreateCustomerViewModel>> UpdateCustomer(CreateCustomerViewModel customerViewModel)
+        public async Task<ActionResult<CreateCustomerViewModel>> UpdateCustomer([FromBody] CreateCustomerViewModel customerViewModel)
         {
             try
             {
