@@ -44,8 +44,9 @@ namespace trainee.Controllers
                 IndexCustomerViewModel customerViewModel = _mapper.Map<IndexCustomerViewModel>(customerDto);
                 return Ok(customerViewModel);
             }
-            catch
+            catch (Exception exception)
             {
+                _logger.LogError(exception.Message);
                 return NotFound("Заказчика с таким id не существует");
             }
         }
@@ -66,8 +67,9 @@ namespace trainee.Controllers
                 await _customerService.DeleteCustomerById(id);
                 return Ok();
             }
-            catch
+            catch (Exception exception)
             {
+                _logger.LogError(exception.Message);
                 return NotFound("Заказчика с таким id не существует");
             }
         }
@@ -75,13 +77,14 @@ namespace trainee.Controllers
         [HttpPut]
         public async Task<ActionResult<CreateCustomerViewModel>> UpdateCustomer(CreateCustomerViewModel customerViewModel)
         {
-            CreateCustomerDTO customerDto = _mapper.Map<CreateCustomerDTO>(customerViewModel);
             try
             {
+                CreateCustomerDTO customerDto = _mapper.Map<CreateCustomerDTO>(customerViewModel);
                 return Ok(await _customerService.UpdateCustomer(customerDto));
             }
-            catch
+            catch (Exception exception)
             {
+                _logger.LogError(exception.Message);
                 return NotFound("Сущность не найдена");
             }
         }

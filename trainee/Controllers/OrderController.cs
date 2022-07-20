@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,12 @@ namespace trainee.Controllers
     {
         private readonly IMapper _mapper;
         private readonly IOrderService _orderService;
-        public OrderController(IOrderService orderService, IMapper mapper)
+        private readonly ILogger<OrderController> _logger;
+        public OrderController(IOrderService orderService, IMapper mapper, ILogger<OrderController> logger)
         {
             _orderService = orderService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         //TODO: Везде сделать проверку на ошибки и отправку разных статусных кодов
@@ -43,8 +46,9 @@ namespace trainee.Controllers
                 IndexOrderViewModel orderViewModel = _mapper.Map<IndexOrderViewModel>(orderDto);
                 return Ok(orderViewModel);
             }
-            catch
+            catch (Exception exception)
             {
+                _logger.LogError(exception.Message);
                 return NotFound("Заказа с таким id не существует");
             }
         }
@@ -65,8 +69,9 @@ namespace trainee.Controllers
                 await _orderService.DeleteOrderById(id);
                 return Ok();
             }
-            catch
+            catch (Exception exception)
             {
+                _logger.LogError(exception.Message);
                 return NotFound("Заказа с таким id не существует");
             }
         }
@@ -74,13 +79,14 @@ namespace trainee.Controllers
         [HttpPut]
         public async Task<ActionResult<CreateOrderViewModel>> UpdateOrder(CreateOrderViewModel orderViewModel)
         {
-            CreateOrderDTO orderDto = _mapper.Map<CreateOrderDTO>(orderViewModel);
             try
             {
+                CreateOrderDTO orderDto = _mapper.Map<CreateOrderDTO>(orderViewModel);
                 return Ok(await _orderService.UpdateOrder(orderDto));
             }
-            catch
+            catch (Exception exception)
             {
+                _logger.LogError(exception.Message);
                 return NotFound("Сущность не найдена");
             }
         }
