@@ -44,6 +44,7 @@ namespace trainee
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<ICustomerRepository, CustomerRepository>();
             services.AddTransient<ICustomerService, CustomerService>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
             services.AddControllers();
         }
 

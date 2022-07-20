@@ -25,8 +25,6 @@ namespace trainee.Controllers
             _mapper = mapper;
             _logger = logger;
         }
-
-        //TODO: Везде сделать проверку на ошибки и отправку разных статусных кодов
         [HttpGet]
         [Route("orders")]
         public async Task<ActionResult<IEnumerable<IndexOrderViewModel>>> GetOrders()
@@ -38,7 +36,7 @@ namespace trainee.Controllers
 
         [HttpGet]
         [Route("orders/{id}")]
-        public async Task<ActionResult<IndexOrderDTO>> GetOrderById(int id)
+        public async Task<ActionResult<IndexOrderDTO>> GetOrderById([FromRoute] int id)
         {
             try
             {
@@ -54,7 +52,7 @@ namespace trainee.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<CreateOrderViewModel>> AddOrder(CreateOrderViewModel orderViewModel)
+        public async Task<ActionResult<CreateOrderViewModel>> AddOrder([FromBody] CreateOrderViewModel orderViewModel)
         {
             CreateOrderDTO orderDto = _mapper.Map<CreateOrderDTO>(orderViewModel);
             return Ok(await _orderService.AddOrder(orderDto));
@@ -62,7 +60,7 @@ namespace trainee.Controllers
 
         [HttpDelete]
         [Route("orders/{id}")]
-        public async Task<ActionResult> DeleteOrderById(int id)
+        public async Task<ActionResult> DeleteOrderById([FromRoute] int id)
         {
             try
             {
@@ -77,7 +75,7 @@ namespace trainee.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<CreateOrderViewModel>> UpdateOrder(CreateOrderViewModel orderViewModel)
+        public async Task<ActionResult<CreateOrderViewModel>> UpdateOrder([FromBody] CreateOrderViewModel orderViewModel)
         {
             try
             {
